@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>AutoAqua</AssemblyName>
+    <RootNamespace>AutoAqua</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Version>1.0.0</Version>
+    <DebugType>none</DebugType>
+    <!-- Override on the command line if your game lives elsewhere:
+         dotnet build -c Release -p:GamePath="D:\Games\Probably Stolen" -->
+    <GamePath Condition="'$(GamePath)' == ''">C:\Games\Probably Stolen</GamePath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- lets the .NET SDK build net472 without Visual Studio -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+
+    <!-- MelonLoader's own copies (NOT the older 0Harmony.dll in the game's Managed folder) -->
+    <Reference Include="MelonLoader">
+      <HintPath>$(GamePath)\MelonLoader\net35\MelonLoader.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(GamePath)\MelonLoader\net35\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <!-- Game and Unity assemblies. These are never copied into the repo or the release zip. -->
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GamePath)\Probably Stolen_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(GamePath)\Probably Stolen_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(GamePath)\Probably Stolen_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>$(GamePath)\Probably Stolen_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Convenience for development: copy the built DLL straight into the game's Mods folder if it exists. -->
+  <Target Name="CopyToMods" AfterTargets="Build" Condition="Exists('$(GamePath)\Mods')">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GamePath)\Mods" />
+  </Target>
+
+</Project>
